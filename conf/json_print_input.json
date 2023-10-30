@@ -1,0 +1,17 @@
+[
+  {
+    "name": "zy",
+    "age": 28,
+    "hobbies": [
+      "h1",
+      "h2"
+    ],
+    "wife": {
+      "name": "gmx",
+      "hobbies": [
+        "h1",
+        "h3"
+      ]
+    }
+  }
+]

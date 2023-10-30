@@ -1,0 +1,10 @@
+{
+  "input": {
+    "type": "json",
+    "file": "E:\\workspace\\golang\\redemptionway\\conf\\input_json_format.json"
+  },
+  "action": {
+    "type": "print",
+    "context": "姓名：{{name}}，年龄：{{age}}，妻子：{{wife.name}}"
+  }
+}
