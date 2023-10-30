@@ -47,5 +47,5 @@ func (jpr *JsonDoPrintRedemption) Redemption(config *entity.Config) {
 
 func readJsonValue(bytes []byte, key string) interface{} {
 	res := gjson.GetBytes(bytes, key)
-	return res.String()
+	return res.Value()
 }
