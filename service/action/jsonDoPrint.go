@@ -1,7 +1,6 @@
 package action
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/tidwall/gjson"
@@ -26,22 +25,10 @@ func (jpr *JsonDoPrintRedemption) Redemption(config *entity.Config) {
 		return
 	}
 	log.Println(fmt.Sprintf("读取到%d条数据", len(arr)))
-	parser := entity.ParseContent(config.Action.Context)
-	if len(parser.Subs) == 0 {
-		log.Println(fmt.Sprintf("未解析出任何打印内容：%s", config.Action.Context))
-		return
-	}
+	text := (config.Action.Context).(string)
 	for _, obj := range arr {
-		buf := new(bytes.Buffer)
 		objBytes, _ := json.Marshal(obj)
-		for _, sub := range parser.Subs {
-			if !sub.Param {
-				buf.WriteString(sub.Text)
-				continue
-			}
-			buf.WriteString(fmt.Sprintf("%v", readJsonValue(objBytes, sub.Text)))
-		}
-		fmt.Println(buf.String())
+		fmt.Println(propertyResolve(text, objBytes))
 	}
 }
 

@@ -1,7 +1,7 @@
 {
   "input": {
     "type": "json",
-    "file": "E:\\workspace\\golang\\redemptionway\\conf\\input_json_format.json"
+    "file": "E:\\workspace\\golang\\redemptionway\\doc\\temp\\待处理JSON.json"
   },
   "action": {
     "type": "print",

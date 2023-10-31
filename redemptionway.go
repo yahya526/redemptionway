@@ -38,7 +38,6 @@ func main() {
 func init() {
 	redemptionWays = make([]service.RedemptionWay, 0)
 	redemptionWays = append(redemptionWays, new(action.ExcelDoHttpRedemption))
-	redemptionWays = append(redemptionWays, new(action.ExcelDoPrintRedemption))
 	redemptionWays = append(redemptionWays, new(action.JsonDoPrintRedemption))
 
 	flag.StringVar(&configFile, "c", "config.json", "config file path")

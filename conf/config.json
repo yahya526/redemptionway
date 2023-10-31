@@ -1,10 +1,24 @@
 {
   "input": {
-    "type": "json",
-    "file": "D:\\workspace\\golang\\redemptionway\\conf\\json_print_input.json"
+    "type": "excel",
+    "file": "E:\\workspace\\golang\\redemptionway\\doc\\temp\\待处理订单.xlsx"
   },
   "action": {
-    "type": "print",
-    "context": "姓名：{{name}}，年龄：{{age}}，妻子：{{wife.name}}"
+    "type": "http",
+    "context": {
+      "method": "GET",
+      "url": "https://laplace-test.lhhspay.com.cn/jingxuan/sas/about",
+      "header": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic Z3Vlc3Q6Z3Vlc3Q=",
+        "tenant": "{{租户}}",
+        "shop": "{{门店}}",
+        "uuid": "{{订单UUID}}"
+      },
+      "body": {
+        "type": "com.qianfan123.sas.service.event.entity.OrderPaidEvent",
+        "content": "{\"tenant\":\"{{租户}}\",\"shop\":\"{{门店}}\",\"uuid\":\"{{订单UUID}}\"}"
+      }
+    }
   }
 }
