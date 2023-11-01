@@ -1,24 +1,10 @@
 {
   "input": {
     "type": "excel",
-    "file": "E:\\workspace\\golang\\redemptionway\\doc\\temp\\待处理订单.xlsx"
+    "file": "D:\\temp\\待处理订单.xlsx"
   },
   "action": {
     "type": "http",
-    "context": {
-      "method": "GET",
-      "url": "https://laplace-test.lhhspay.com.cn/jingxuan/sas/about",
-      "header": {
-        "Content-Type": "application/json",
-        "Authorization": "Basic Z3Vlc3Q6Z3Vlc3Q=",
-        "tenant": "{{租户}}",
-        "shop": "{{门店}}",
-        "uuid": "{{订单UUID}}"
-      },
-      "body": {
-        "type": "com.qianfan123.sas.service.event.entity.OrderPaidEvent",
-        "content": "{\"tenant\":\"{{租户}}\",\"shop\":\"{{门店}}\",\"uuid\":\"{{订单UUID}}\"}"
-      }
-    }
+    "param": "http_template.txt"
   }
 }

@@ -1,7 +1,8 @@
 package constant
 
 const (
-	FILED_METHOD = "method"
-	FILED_URL    = "url"
-	FILED_HEADER = "header"
+	HttpMethod  = "method"
+	HttpURL     = "url"
+	HttpHeaders = "headers"
+	HttpBody    = "body"
 )

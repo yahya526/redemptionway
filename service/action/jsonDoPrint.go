@@ -25,7 +25,7 @@ func (jpr *JsonDoPrintRedemption) Redemption(config *entity.Config) {
 		return
 	}
 	log.Println(fmt.Sprintf("读取到%d条数据", len(arr)))
-	text := (config.Action.Context).(string)
+	text := (config.Action.Param).(string)
 	for _, obj := range arr {
 		objBytes, _ := json.Marshal(obj)
 		fmt.Println(propertyResolve(text, objBytes))

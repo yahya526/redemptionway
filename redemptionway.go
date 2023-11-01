@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"log"
-	"os"
 	"redemptionway/entity"
 	"redemptionway/service"
 	"redemptionway/service/action"
@@ -17,7 +15,6 @@ var configFile string
 
 func main() {
 	flag.Parse()
-	defer exit()
 
 	config := new(entity.Config)
 	err := util.ReadEntityFile(configFile, &config)
@@ -41,11 +38,4 @@ func init() {
 	redemptionWays = append(redemptionWays, new(action.JsonDoPrintRedemption))
 
 	flag.StringVar(&configFile, "c", "config.json", "config file path")
-}
-
-func exit() {
-	fmt.Println("请输入回车键退出")
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	os.Exit(1)
 }

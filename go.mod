@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/tidwall/gjson v1.17.0
 	github.com/xuri/excelize/v2 v2.8.0
+	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
 )
 
 require (

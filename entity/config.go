@@ -11,6 +11,6 @@ type Input struct {
 }
 
 type Action struct {
-	Type    string      `json:"type"`
-	Context interface{} `json:"context"`
+	Type  string      `json:"type"`
+	Param interface{} `json:"param"`
 }

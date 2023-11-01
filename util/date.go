@@ -2,9 +2,17 @@ package util
 
 import "time"
 
-var ()
+var (
+	DateTimeSimple = "20060102150405"
+)
 
-func Now() string {
-	now := time.Now()
-	return now.String()
+func NowStr() string {
+	return time.Now().Format(time.DateTime)
+}
+
+func NowStrSimple() string {
+	return time.Now().Format(DateTimeSimple)
+}
+
+func Unix() {
 }

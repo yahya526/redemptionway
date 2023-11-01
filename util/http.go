@@ -7,15 +7,15 @@ import (
 	"time"
 )
 
-func DoHttp(request *http.Request) error {
+func DoHttp(req *http.Request) error {
 	client := new(http.Client)
 	client.Timeout = time.Second * 30
 
-	reqBytes, err := httputil.DumpRequest(request, true)
+	reqBytes, err := httputil.DumpRequest(req, true)
 	if err == nil {
 		log.Println("请求：", string(reqBytes))
 	}
-	resp, err := client.Do(request)
+	resp, err := client.Do(req)
 	if err != nil {
 		return err
 	}

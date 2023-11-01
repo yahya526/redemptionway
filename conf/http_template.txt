@@ -1,0 +1,9 @@
+curl --location 'https://daojia-zhenhua-test.hd123.com:5007/zhenhua/sas/event/publish' \
+--header 'shop: {{shop}}' \
+--header 'tenant: {{tenant}}' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Basic Z3Vlc3Q6Z3Vlc3Q=' \
+--data '{
+    "type": "com.qianfan123.sas.service.event.entity.OrderPaidEvent",
+    "content": "{\"tenant\":\"{{tenant}}\",\"shop\":\"{{shop}}\",\"uuid\":\"{{uuid}}\"}"
+}'
