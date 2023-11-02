@@ -9,6 +9,6 @@ const (
 )
 
 const (
-	PARAM_L = "{{"
-	PARAM_R = "}}"
+	PlaceHolderL = "${"
+	PlaceHolderR = "}"
 )

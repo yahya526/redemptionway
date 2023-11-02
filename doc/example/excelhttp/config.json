@@ -1,0 +1,10 @@
+{
+  "input": {
+    "type": "excel",
+    "file": "example_input.xlsx"
+  },
+  "action": {
+    "type": "http",
+    "param": "example_action_http_curl_template.txt"
+  }
+}

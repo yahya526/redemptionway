@@ -12,7 +12,6 @@ import (
 	"redemptionway/constant"
 	"redemptionway/entity"
 	"redemptionway/util"
-	"strings"
 )
 
 type ExcelDoHttpRedemption struct {
@@ -23,37 +22,35 @@ func (entity *ExcelDoHttpRedemption) Support(input string, action string) bool {
 }
 
 func (entity *ExcelDoHttpRedemption) Redemption(config *entity.Config) {
-	// 解析curl模板
-	reqTemplate, err := parseCurlFile(config.Action.Param.(string))
+	// 解析报文模板
+	template := util.HttpTemplateParser{}
+	err := template.ParseCurl(config.Action.Param.(string))
 	if err != nil {
-		log.Printf("解析模板文件异常, 原因: %v\n", err)
+		log.Printf("解析请求模板文件异常, 原因: %v\n", err)
 		return
 	}
-	fmt.Println(reqTemplate.Url)
-
+	// 读取excel文件
 	excel, err := excelize.OpenFile(config.Input.File)
 	if err != nil {
 		log.Printf("读取Excel文件异常, 原因: %v\n", err)
 		return
 	}
 	defer excel.Close()
+	// 解析占位符并发送请求
 	sheet := excel.GetSheetName(0)
 	excel.SetActiveSheet(0)
 	rows, err := excel.GetRows(sheet)
 	if err != nil {
-		log.Println(fmt.Sprintf("读取sheet %s 的行异常, 原因: %v", sheet, err))
+		log.Printf("读取sheet %s 的数据异常, 原因: %v\n", sheet, err)
 		return
 	}
-	log.Println("读取到", len(rows), "行数据")
 	if len(rows) <= 1 {
 		return
 	}
 	head := rows[0]
-	log.Println("表头", strings.Join(head, ","))
 	reqColumn, rspColumn := len(head)+1, len(head)+2
 	_ = excel.SetCellStr(sheet, util.MustCell(reqColumn, 1), "请求报文")
 	_ = excel.SetCellStr(sheet, util.MustCell(rspColumn, 1), "响应报文")
-	ctx := (config.Action.Param).(map[string]interface{})
 	for i := 1; i < len(rows); i++ {
 		row := rows[i]
 		obj := make(map[string]interface{})
@@ -64,12 +61,12 @@ func (entity *ExcelDoHttpRedemption) Redemption(config *entity.Config) {
 		reqCell := util.MustCell(reqColumn, i+1)
 		repCell := util.MustCell(rspColumn, i+1)
 
-		req, err := http.NewRequest(method(ctx, objBytes), url(ctx, objBytes), body(ctx, objBytes))
+		req, err := http.NewRequest(method(&template, objBytes), url(&template, objBytes), body(&template, objBytes))
 		if err != nil {
 			_ = excel.SetCellStr(sheet, reqCell, fmt.Sprintf("%v", err))
 			continue
 		}
-		req.Header = header(ctx, objBytes)
+		req.Header = header(&template, objBytes)
 		reqBytes, _ := httputil.DumpRequest(req, true)
 		_ = excel.SetCellStr(sheet, reqCell, string(reqBytes))
 
@@ -87,72 +84,31 @@ func (entity *ExcelDoHttpRedemption) Redemption(config *entity.Config) {
 	}
 }
 
-func parseCurlFile(path string) (*UnresolvedHttpRequest, error) {
-	buf := new(bytes.Buffer)
-	callback := func(line string) {
-		buf.WriteString(line)
-	}
-	err := util.Scan(path, callback)
-	if err != nil {
-		return nil, err
-	}
-	elements := strings.Split(buf.String(), "' \\")
-	for _, line := range elements {
-
-	}
-	fmt.Println(len(elements))
-	return nil, err
+func method(template *util.HttpTemplateParser, objBytes []byte) string {
+	return propertyResolve(template.Method, objBytes)
 }
 
-func method(ctx map[string]interface{}, objBytes []byte) string {
-	v, exist := ctx[constant.HttpMethod]
-	if !exist {
-		return http.MethodGet
-	}
-	return propertyResolve(v.(string), objBytes)
+func url(template *util.HttpTemplateParser, objBytes []byte) string {
+	return propertyResolve(template.Url, objBytes)
 }
 
-func url(ctx map[string]interface{}, objBytes []byte) string {
-	v, exist := ctx[constant.HttpURL]
-	if !exist {
-		return ""
-	}
-	return propertyResolve(v.(string), objBytes)
-}
-
-func header(ctx map[string]interface{}, objBytes []byte) http.Header {
+func header(template *util.HttpTemplateParser, objBytes []byte) http.Header {
 	h := http.Header{}
-	v, exist := ctx[constant.HttpHeaders]
-	if !exist {
+	if len(template.Headers) == 0 {
 		return h
 	}
-	ctxH := v.(map[string]interface{})
-	if len(ctxH) == 0 {
-		return h
-	}
-	for k, v := range ctxH {
-		h[k] = []string{propertyResolve(fmt.Sprintf("%v", v), objBytes)}
+	for k, v := range template.Headers {
+		h[propertyResolve(k, objBytes)] = []string{propertyResolve(fmt.Sprintf("%v", v), objBytes)}
 	}
 	return h
 }
 
-func body(ctx map[string]interface{}, objBytes []byte) io.Reader {
+func body(template *util.HttpTemplateParser, objBytes []byte) io.Reader {
 	buf := new(bytes.Buffer)
-	configBody, exist := ctx[constant.HttpBody]
-	if !exist {
+	if len(template.Body) == 0 {
 		return buf
 	}
-	bodyStr, ok := configBody.(string)
-	if ok {
-		return strings.NewReader(propertyResolve(bodyStr, objBytes))
-	}
-	bodyObj, ok := configBody.(map[string]interface{})
-	if ok {
-		for bodyK, bodyV := range bodyObj {
-			bodyObj[bodyK] = propertyResolve(fmt.Sprintf("%v", bodyV), objBytes)
-		}
-	}
-	buf.WriteString(util.MustMarshal(bodyObj))
+	buf.WriteString(propertyResolve(template.Body, objBytes))
 	return buf
 }
 

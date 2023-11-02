@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"log"
 	"redemptionway/constant"
 	"strings"
 )
@@ -14,33 +13,44 @@ type ContentParser struct {
 type SubContent struct {
 	Text string
 
-	Param bool
+	PlaceHolder bool
 }
 
 func ParseContent(context string) *ContentParser {
-	result := new(ContentParser)
-	result.origin = context
-	if len(context) == 0 {
-		return result
+	result := ContentParser{
+		origin: context,
 	}
-	arrL := strings.Split(context, constant.PARAM_L)
-	for _, v := range arrL {
-		if len(v) == 0 {
-			continue
+	for {
+		if len(context) == 0 {
+			break
 		}
-		arrR := strings.Split(v, constant.PARAM_R)
-		result.Subs = append(result.Subs, &SubContent{
-			Text:  arrR[0],
-			Param: len(arrR) > 1,
-		})
-		if len(arrR) >= 2 {
+		idx := strings.Index(context, constant.PlaceHolderL)
+		if idx < 0 {
 			result.Subs = append(result.Subs, &SubContent{
-				Text: arrR[1],
+				Text: context,
+			})
+			break
+		}
+		text := context[0:idx]
+		if len(text) > 0 {
+			result.Subs = append(result.Subs, &SubContent{
+				Text: text,
 			})
 		}
-		if len(arrR) >= 3 {
-			log.Printf("%s解析异常, 忽略", strings.Join(arrR[2:], ";"))
+		context = context[idx+len(constant.PlaceHolderL):]
+		idx = strings.Index(context, constant.PlaceHolderR)
+		if idx > 0 {
+			text = context[0:idx]
+			result.Subs = append(result.Subs, &SubContent{
+				Text:        text,
+				PlaceHolder: true,
+			})
+			context = context[idx+len(constant.PlaceHolderR):]
+		} else if idx == 0 {
+			context = context[idx+len(constant.PlaceHolderR):]
+		} else {
+			// next round
 		}
 	}
-	return result
+	return &result
 }

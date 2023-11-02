@@ -13,7 +13,7 @@ func propertyResolve(text string, objBytes []byte) string {
 	}
 	buf := new(bytes.Buffer)
 	for _, sub := range parser.Subs {
-		if !sub.Param {
+		if !sub.PlaceHolder {
 			buf.WriteString(sub.Text)
 			continue
 		}

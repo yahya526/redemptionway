@@ -1,16 +1,12 @@
 package util
 
 import (
-	"golang.org/x/exp/constraints"
+	"log"
 	"testing"
 )
 
-func TestUtil(t *testing.T) {
-}
-
-func Max[T constraints.Ordered](a, b T) T {
-	if a > b {
-		return a
-	}
-	return b
+func TestHttpTemplateParser(t *testing.T) {
+	parser := HttpTemplateParser{}
+	err := parser.ParseCurl("E:\\workspace\\golang\\redemptionway\\conf\\http_template.txt")
+	log.Printf("%v", err)
 }

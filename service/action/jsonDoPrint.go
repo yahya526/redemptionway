@@ -24,7 +24,6 @@ func (jpr *JsonDoPrintRedemption) Redemption(config *entity.Config) {
 		log.Println(fmt.Sprintf("读取输入文件异常, 原因: %v", err))
 		return
 	}
-	log.Println(fmt.Sprintf("读取到%d条数据", len(arr)))
 	text := (config.Action.Param).(string)
 	for _, obj := range arr {
 		objBytes, _ := json.Marshal(obj)

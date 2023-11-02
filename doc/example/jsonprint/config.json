@@ -1,0 +1,10 @@
+{
+  "input": {
+    "type": "json",
+    "file": "example_input.json"
+  },
+  "action": {
+    "type": "print",
+    "param": "姓名：${name}，年龄：${age}"
+  }
+}

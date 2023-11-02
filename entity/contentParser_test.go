@@ -1,24 +1,14 @@
 package entity
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
+	"redemptionway/util"
 	"testing"
 )
 
 func TestParseContent(t *testing.T) {
-	jsonStr(ParseContent("姓名：{{name}}，年龄：{{age}}，妻子：{{wife.name}}"))
-	jsonStr(ParseContent("姓名："))
-	jsonStr(ParseContent("{{name}}{{wife}}.name}}"))
-	jsonStr(ParseContent("{{name}} {{wife.name}}"))
-}
-
-func jsonStr(obj interface{}) {
-	bytes, err := json.Marshal(obj)
-	if err != nil {
-		log.Printf("%v\n", err)
-		return
-	}
-	fmt.Println(string(bytes))
+	fmt.Println(util.MustMarshal(ParseContent("姓名：${name}，年龄：${age}，妻子：${wife.name}")))
+	fmt.Println(util.MustMarshal(ParseContent("姓名：")))
+	fmt.Println(util.MustMarshal(ParseContent("a${name}${wife.name}a")))
+	fmt.Println(util.MustMarshal(ParseContent("${name}${wife.name}")))
 }
